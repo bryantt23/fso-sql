@@ -65,14 +65,21 @@ app.post('/api/blogs', async (req, res) => {
 })
 
 app.delete('/api/blogs/:id', async (req, res) => {
-    const blog = await Blog.findByPk(req.params.id)
-    if (blog) {
-        await Blog.destroy(req.params.id)
-        res.json(blog)
-    } else {
-        res.status(404).end()
+    try {
+        const id = req.params.id;
+        const deleted = await Blog.destroy({
+            where: { id: id }
+        });
+
+        if (deleted) {
+            res.status(204).end(); // No content to send back, but signifies successful deletion
+        } else {
+            res.status(404).json({ message: "Blog not found" });
+        }
+    } catch (error) {
+        res.status(500).json({ error: 'An error occurred while attempting to delete the blog' });
     }
-})
+});
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
