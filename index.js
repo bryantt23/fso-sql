@@ -15,6 +15,7 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
 
 
 class Note extends Model { }
+Note.sync()
 Note.init({
     id: {
         type: DataTypes.INTEGER,
@@ -39,8 +40,8 @@ Note.init({
 })
 
 app.get('/api/notes', async (req, res) => {
-
     const notes = await Note.findAll()
+    console.log(JSON.stringify(notes, null, 2))
     res.json(notes)
 })
 
@@ -50,6 +51,18 @@ app.post('/api/notes', async (req, res) => {
         return res.json(note)
     } catch (error) {
         return res.status(400).json({ error })
+    }
+})
+
+app.put('/api/notes/:id', async (req, res) => {
+    const note = await Note.findByPk(req.params.id)
+    if (note) {
+        console.log(note.toJSON())
+        note.important = req.body.important
+        await note.save()
+        res.json(note)
+    } else {
+        res.status(404).end()
     }
 })
 
