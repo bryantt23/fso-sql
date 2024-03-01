@@ -64,17 +64,15 @@ app.post('/api/blogs', async (req, res) => {
     }
 })
 
-// app.put('/api/blogs/:id', async (req, res) => {
-//     const blog = await Blog.findByPk(req.params.id)
-//     if (blog) {
-//         console.log(blog.toJSON())
-//         blog.important = req.body.important
-//         await Blog.save()
-//         res.json(blog)
-//     } else {
-//         res.status(404).end()
-//     }
-// })
+app.delete('/api/blogs/:id', async (req, res) => {
+    const blog = await Blog.findByPk(req.params.id)
+    if (blog) {
+        await Blog.destroy(req.params.id)
+        res.json(blog)
+    } else {
+        res.status(404).end()
+    }
+})
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
