@@ -30,4 +30,20 @@ router.get('/:id', async (req, res) => {
     }
 })
 
+router.put('/:username', async (req, res) => {
+    try {
+        const user = await User.findOne({ where: { username: req.params.id } })
+        if (user) {
+            user.username = req.body.username
+            await user.save()
+            res.json(user)
+        } else {
+            res.status(404).json({ message: 'User not found' });
+        }
+    } catch (error) {
+        console.error('Error updating user:', error);
+        res.status(400).json({ error: 'An error occurred while attempting to update the user' });
+    }
+})
+
 module.exports = router
