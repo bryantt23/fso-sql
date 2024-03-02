@@ -3,12 +3,16 @@ const jwt = require('jsonwebtoken')
 
 const { User } = require('../models')
 const { Note } = require('../models')
+const { Blog } = require('../models')
 
 router.get('/', async (req, res) => {
     const users = await User.findAll({
-        include: {
+        include: [{
             model: Note
-        }
+        }, {
+            model: Blog,
+            attributes: ['id', 'title', 'url', 'likes'] // Adjust attributes as needed
+        }]
     })
     res.json(users)
 })

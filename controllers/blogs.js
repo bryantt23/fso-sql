@@ -1,6 +1,7 @@
 const router = require('express').Router()
 const jwt = require('jsonwebtoken')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 const getTokenFrom = request => {
     const authorization = request.get("authorization")
@@ -22,7 +23,9 @@ const tokenExtractor = (req, res, next) => {
 }
 
 router.get('/', async (req, res) => {
-    const blogs = await Blog.findAll()
+    const blogs = await Blog.findAll({
+        include: [{ model: User, attributes: ['id', 'username', 'name'] }]
+    })
     console.log(JSON.stringify(blogs, null, 2))
     res.json(blogs)
 })
