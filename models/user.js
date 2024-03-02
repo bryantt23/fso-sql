@@ -13,11 +13,21 @@ User.init({
     username: {
         type: DataTypes.STRING,
         unique: true,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            notEmpty: {
+                msg: "Username must not be empty"
+            }
+        }
     },
     name: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            notEmpty: {
+                msg: "Name must not be empty"
+            }
+        }
     },
 }, {
     sequelize,
