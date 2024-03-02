@@ -26,6 +26,13 @@ Blog.init({
         type: DataTypes.INTEGER,
         defaultValue: 0 // Assuming likes can start at 0 and can be null, thus no 'allowNull' needed
     },
+    userId: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: 'users',
+            key: 'id'
+        }
+    }
 }, {
     sequelize,
     modelName: 'Blog', // Sequelize automatically looks for the plural form of your model name

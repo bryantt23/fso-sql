@@ -13,7 +13,7 @@ router.post('/', async (request, response) => {
         }
     })
 
-    const passwordCorrect = body.password === 'secret'
+    const passwordCorrect = body.password === 'password'
 
     if (!(user && passwordCorrect)) {
         return response.status(401).json({
@@ -26,7 +26,7 @@ router.post('/', async (request, response) => {
         id: user.id,
     }
 
-    const token = jwt.sign(userForToken, SECRET)
+    const token = jwt.sign(userForToken, process.env.SECRET)
 
     response
         .status(200)
