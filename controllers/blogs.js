@@ -19,6 +19,18 @@ router.post('/', async (req, res) => {
     }
 })
 
+router.put('/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const blog = await Blog.findById(id)
+        blog.likes = req.body.likes
+        blog.save()
+        return res.json(blog.likes)
+    } catch (error) {
+        return res.status(400).json({ error })
+    }
+})
+
 router.delete('/:id', async (req, res) => {
     try {
         const id = req.params.id;
