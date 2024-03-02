@@ -32,6 +32,5 @@ Blog.init({
     underscored: true,
     timestamps: false
 });
-Blog.sync()
 
 module.exports = Blog
