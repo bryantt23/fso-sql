@@ -61,18 +61,26 @@ router.put('/:id', async (req, res, next) => {
     }
 })
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', tokenExtractor, async (req, res) => {
     try {
         const id = req.params.id;
-        const deleted = await Blog.destroy({
+        const blog = await Blog.findByPk(id)
+        console.log("🚀 ~ router.delete ~ blog:", JSON.stringify(blog, null, 4))
+        if (!blog) {
+            return res.status(404).json({ message: "Blog not found" });
+        }
+
+        // Check if the requesting user is the one who added the blog
+        if (blog.userId !== req.user.id) {
+            // If not, deny the deletion request
+            return res.status(401).json({ error: 'You are not authorized to delete this blog' });
+        }
+
+        // If the user is authorized, proceed with deletion
+        await Blog.destroy({
             where: { id: id }
         });
-
-        if (deleted) {
-            res.status(204).end(); // No content to send back, but signifies successful deletion
-        } else {
-            res.status(404).json({ message: "Blog not found" });
-        }
+        res.status(204).end(); // No content to send back, but signifies successful deletion
     } catch (error) {
         res.status(500).json({ error: 'An error occurred while attempting to delete the blog' });
     }
