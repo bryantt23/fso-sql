@@ -8,18 +8,19 @@ router.get('/', async (req, res) => {
     res.json(blogs)
 })
 
-router.post('/', async (req, res) => {
+router.post('/', async (req, res, next) => {
     try {
         console.log("🚀 ~ router.post ~ req.body:", req.body)
-
         const blog = await Blog.create(req.body)
         return res.json(blog)
     } catch (error) {
-        return res.status(400).json({ error })
+        console.log("🚀 ~ router.post ~ error:", error)
+        next(error)
+        // return res.status(400).json({ error })
     }
 })
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', async (req, res, next) => {
     try {
         const id = req.params.id;
         const blog = await Blog.findByPk(id)
@@ -32,7 +33,8 @@ router.put('/:id', async (req, res) => {
             res.status(404).json({ message: "Blog not found" })
         }
     } catch (error) {
-        return res.status(400).json({ error })
+        next(error)
+        // return res.status(400).json({ error })
     }
 })
 
