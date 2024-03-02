@@ -22,10 +22,15 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
     try {
         const id = req.params.id;
-        const blog = await Blog.findById(id)
-        blog.likes = req.body.likes
-        blog.save()
-        return res.json(blog.likes)
+        const blog = await Blog.findByPk(id)
+        if (blog) {
+            blog.likes = req.body.likes
+            await blog.save()
+            return res.json(blog.likes)
+        }
+        else {
+            res.status(404).json({ message: "Blog not found" })
+        }
     } catch (error) {
         return res.status(400).json({ error })
     }
