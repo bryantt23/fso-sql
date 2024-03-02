@@ -2,7 +2,7 @@ const router = require('express').Router()
 const jwt = require('jsonwebtoken')
 const Blog = require('../models/blog')
 const User = require('../models/user')
-const { Sequelize, Op } = require('sequelize')
+const { Op, fn, col, literal } = require('sequelize');
 
 const getTokenFrom = request => {
     const authorization = request.get("authorization")
@@ -22,6 +22,31 @@ const tokenExtractor = (req, res, next) => {
     req.user = decodedToken
     next()
 }
+
+router.get("/authors", async (req, res) => {
+    try {
+        const authorStats = await Blog.findAll({
+            attributes: [
+                'author',
+                [fn('COUNT', col('id')), 'articles'],
+                [fn('SUM', col('likes')), 'likes']
+            ],
+            group: ['author'],
+            order: [[fn('SUM', col('likes')), 'DESC']],
+            raw: true
+        })
+
+        const formattedStats = authorStats.map(author => ({
+            author: author.author,
+            articles: Number(author.articles),
+            likes: Number(author.likes)
+        }))
+        res.json(formattedStats)
+    } catch (error) {
+        console.error("Error fetching author statistics:", error);
+        res.status(500).json({ error: 'An error occurred while retrieving author statistics' });
+    }
+})
 
 router.get('/', async (req, res) => {
     let whereCondition = {}

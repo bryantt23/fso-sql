@@ -5,5 +5,5 @@ Content-Type: application/json
 {
   "author": "John Doe with jwt",
   "url": "http://example.com/blog-post/with-token",
-  "title": "A New Blog Post with jwt"
+  "title": "jami"
 }
