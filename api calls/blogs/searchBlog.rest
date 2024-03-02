@@ -1,0 +1,11 @@
+### Get all blogs without filtering
+GET http://localhost:3001/api/blogs
+Content-Type: application/json
+
+###
+
+### Get blogs with 'react' in the title (case-insensitive search)
+GET http://localhost:3001/api/blogs?search=react
+Content-Type: application/json
+
+###
