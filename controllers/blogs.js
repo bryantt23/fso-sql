@@ -2,7 +2,7 @@ const router = require('express').Router()
 const jwt = require('jsonwebtoken')
 const Blog = require('../models/blog')
 const User = require('../models/user')
-const { Sequelize } = require('sequelize')
+const { Sequelize, Op } = require('sequelize')
 
 const getTokenFrom = request => {
     const authorization = request.get("authorization")
@@ -28,9 +28,12 @@ router.get('/', async (req, res) => {
 
     // Check if there's a 'search' query parameter
     if (req.query.search) {
-        // Apply a case-insensitive filter to the title field
-        whereCondition.title = {
-            [Sequelize.Op.iLike]: `%${req.query.search}%`
+        // Apply a case-insensitive filter to both the title and author fields
+        whereCondition = {
+            [Op.or]: [
+                { title: { [Op.iLike]: `%${req.query.search}%` } },
+                { author: { [Op.iLike]: `%${req.query.search}%` } }
+            ]
         }
     }
     try {
@@ -38,9 +41,10 @@ router.get('/', async (req, res) => {
             where: whereCondition,
             include: [{ model: User, attributes: ['id', 'username', 'name'] }]
         })
+        console.log(JSON.stringify(blogs, null, 2))
         res.json(blogs)
     } catch (error) {
-        console.log(JSON.stringify(blogs, null, 2))
+        console.log("🚀 ~ router.get ~ error:", error)
         res.status(500).json({ error: 'An error occurred while retrieving the blogs' });
     }
 

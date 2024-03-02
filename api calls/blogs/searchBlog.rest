@@ -1,10 +1,22 @@
-### Get all blogs without filtering
+### Get all blogs without any filter
 GET http://localhost:3001/api/blogs
 Content-Type: application/json
 
 ###
 
-### Get blogs with 'react' in the title (case-insensitive search)
+### Get blogs with 'jami' in the title
+GET http://localhost:3001/api/blogs?search=jami
+Content-Type: application/json
+
+###
+
+### Get blogs with 'jami' in the author
+GET http://localhost:3001/api/blogs?search=jami
+Content-Type: application/json
+
+###
+
+### Get blogs with 'react' either in the title or author
 GET http://localhost:3001/api/blogs?search=react
 Content-Type: application/json
 
