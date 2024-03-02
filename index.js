@@ -12,7 +12,13 @@ const loginRouter = require('./controllers/login')
 const errorHandler = (error, request, response, next) => {
     console.error('in the errorHandler', error.message)
 
-    if (error.name === 'CastError') {
+    if (error.name === 'SequelizeValidationError') {
+        const messages = error.errors.map(err => err.message)
+        return response.status(400).json({
+            error: messages
+        })
+    }
+    else if (error.name === 'CastError') {
         return response.status(400).send({
             error: 'malformatted id'
         })
